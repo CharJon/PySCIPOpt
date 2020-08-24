@@ -1961,18 +1961,8 @@ cdef class Model:
         """
         assert isinstance(cons, ExprCons), "given constraint is not ExprCons but %s" % cons.__class__.__name__
 
-        # replace empty name with generic one
-        if name == '':
-            name = 'c'+str(SCIPgetNConss(self._scip)+1)
-
-        kwargs = dict(name=name, initial=initial, separate=separate,
-                      enforce=enforce, check=check,
-                      propagate=propagate, local=local,
-                      modifiable=modifiable, dynamic=dynamic,
-                      removable=removable,
-                      stickingatnode=stickingatnode)
-        kwargs['lhs'] = -SCIPinfinity(self._scip) if cons._lhs is None else cons._lhs
-        kwargs['rhs'] =  SCIPinfinity(self._scip) if cons._rhs is None else cons._rhs
+        kwargs = self._cons_dict(check, cons, dynamic, enforce, initial, local, modifiable, name, propagate,
+                                 removable, separate, stickingatnode)
 
         deg = cons.expr.degree()
         if deg <= 1:
@@ -1983,6 +1973,79 @@ cdef class Model:
             return self._addGenNonlinearCons(cons, **kwargs)
         else:
             return self._addNonlinearCons(cons, **kwargs)
+
+    def _cons_dict(self, check, cons, dynamic, enforce, initial, local, modifiable, name, propagate, removable, separate,
+                   stickingatnode):
+        if name == '':
+            name = 'c' + str(SCIPgetNConss(self._scip) + 1)
+        kwargs = dict(name=name, initial=initial, separate=separate,
+                      enforce=enforce, check=check,
+                      propagate=propagate, local=local,
+                      modifiable=modifiable, dynamic=dynamic,
+                      removable=removable,
+                      stickingatnode=stickingatnode)
+        kwargs['lhs'] = -SCIPinfinity(self._scip) if cons._lhs is None else cons._lhs
+        kwargs['rhs'] = SCIPinfinity(self._scip) if cons._rhs is None else cons._rhs
+        return kwargs
+
+    def createConsLinear(self, lincons, name='', initial=True, separate=True,
+                enforce=True, check=True, propagate=True, local=False,
+                modifiable=False, dynamic=False, removable=False,
+                stickingatnode=False):
+        """Creates and returns a linear constraint.
+
+        :param cons: list of coefficients
+        :param name: the name of the constraint, generic name if empty (Default value = '')
+        :param initial: should the LP relaxation of constraint be in the initial LP? (Default value = True)
+        :param separate: should the constraint be separated during LP processing? (Default value = True)
+        :param enforce: should the constraint be enforced during node processing? (Default value = True)
+        :param check: should the constraint be checked during for feasibility? (Default value = True)
+        :param propagate: should the constraint be propagated during node processing? (Default value = True)
+        :param local: is the constraint only valid locally? (Default value = False)
+        :param modifiable: is the constraint modifiable (subject to column generation)? (Default value = False)
+        :param dynamic: is the constraint subject to aging? (Default value = False)
+        :param removable: should the relaxation be removed from the LP due to aging or cleanup? (Default value = False)
+        :param stickingatnode: should the constraint always be kept at the node where it was added, even if it may be  moved to a more global node? (Default value = False)
+
+        """
+        assert isinstance(lincons, ExprCons), "given constraint is not ExprCons but %s" % lincons.__class__.__name__
+        assert lincons.expr.degree() <= 1, "given constraint is not linear, degree == %d" % lincons.expr.degree()
+        kwargs = self._cons_dict(check, lincons, dynamic, enforce, initial, local, modifiable, name, propagate,
+                                 removable, separate, stickingatnode)
+        return self._createLinCons(lincons, **kwargs)
+
+    def _createLinCons(self, ExprCons lincons, **kwargs):
+        assert isinstance(lincons, ExprCons), "given constraint is not ExprCons but %s" % lincons.__class__.__name__
+
+        assert lincons.expr.degree() <= 1, "given constraint is not linear, degree == %d" % lincons.expr.degree()
+        terms = lincons.expr.terms
+
+        cdef SCIP_CONS* scip_cons
+
+        cdef int nvars = len(terms.items())
+
+        vars_array = <SCIP_VAR**> malloc(nvars * sizeof(SCIP_VAR*))
+        coeffs_array = <SCIP_Real*> malloc(nvars * sizeof(SCIP_Real))
+
+        for i, (key, coeff) in enumerate(terms.items()):
+            vars_array[i] = <SCIP_VAR*>(<Variable>key[0]).scip_var
+            coeffs_array[i] = <SCIP_Real>coeff
+
+        PY_SCIP_CALL(SCIPcreateConsLinear(
+            self._scip, &scip_cons, str_conversion(kwargs['name']), nvars, vars_array, coeffs_array,
+            kwargs['lhs'], kwargs['rhs'], kwargs['initial'],
+            kwargs['separate'], kwargs['enforce'], kwargs['check'],
+            kwargs['propagate'], kwargs['local'], kwargs['modifiable'],
+            kwargs['dynamic'], kwargs['removable'], kwargs['stickingatnode']))
+
+        # PY_SCIP_CALL(SCIPcaptureCons(self._scip, &scip_cons))
+        py_cons = Constraint.create(scip_cons)
+
+
+        free(vars_array)
+        free(coeffs_array)
+
+        return py_cons
 
     def _addLinCons(self, ExprCons lincons, **kwargs):
         assert isinstance(lincons, ExprCons), "given constraint is not ExprCons but %s" % lincons.__class__.__name__
