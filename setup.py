@@ -1,3 +1,4 @@
+import numpy
 from setuptools import setup, Extension
 import os, platform, sys, re
 
@@ -63,7 +64,7 @@ if not os.path.exists(os.path.join(packagedir, 'scip.pyx')):
 ext = '.pyx' if cythonize else '.c'
 
 extensions = [Extension('pyscipopt.scip', [os.path.join(packagedir, 'scip'+ext)],
-                          include_dirs=[includedir],
+                          include_dirs=[includedir, numpy.get_include()],
                           library_dirs=[libdir],
                           libraries=[libname],
                           extra_compile_args = extra_compile_args,
