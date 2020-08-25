@@ -269,9 +269,9 @@ def PY_SCIP_CALL(SCIP_RETCODE rc):
 
 cdef class Event:
     """Base class holding a pointer to corresponding SCIP_EVENT"""
-    cdef SCIP_EVENT* event
+    # cdef SCIP_EVENT* event
     # can be used to store problem data
-    cdef public object data
+    # cdef public object data
 
     @staticmethod
     cdef create(SCIP_EVENT* scip_event):
@@ -320,9 +320,9 @@ cdef class Event:
 
 cdef class Column:
     """Base class holding a pointer to corresponding SCIP_COL"""
-    cdef SCIP_COL* scip_col
+    # cdef SCIP_COL* scip_col
     # can be used to store problem data
-    cdef public object data
+    # cdef public object data
 
     @staticmethod
     cdef create(SCIP_COL* scipcol):
@@ -380,9 +380,9 @@ cdef class Column:
 
 cdef class Row:
     """Base class holding a pointer to corresponding SCIP_ROW"""
-    cdef SCIP_ROW* scip_row
+    # cdef SCIP_ROW* scip_row
     # can be used to store problem data
-    cdef public object data
+    # cdef public object data
 
     @staticmethod
     cdef create(SCIP_ROW* sciprow):
@@ -541,9 +541,9 @@ cdef class NLRow:
 
 cdef class Solution:
     """Base class holding a pointer to corresponding SCIP_SOL"""
-    cdef SCIP_SOL* sol
+    # cdef SCIP_SOL* sol
     # can be used to store problem data
-    cdef public object data
+    # cdef public object data
 
     @staticmethod
     cdef create(SCIP* scip, SCIP_SOL* scip_sol):
@@ -629,9 +629,9 @@ cdef class DomainChanges:
 
 cdef class Node:
     """Base class holding a pointer to corresponding SCIP_NODE"""
-    cdef SCIP_NODE* scip_node
+    # cdef SCIP_NODE* scip_node
     # can be used to store problem data
-    cdef public object data
+    # cdef public object data
 
     @staticmethod
     cdef create(SCIP_NODE* scipnode):
@@ -765,9 +765,9 @@ cdef class Node:
 
 cdef class Variable(Expr):
     """Is a linear expression and has SCIP_VAR*"""
-    cdef SCIP_VAR* scip_var
+    # cdef SCIP_VAR* scip_var
     # can be used to store problem data
-    cdef public object data
+    # cdef public object data
 
     @staticmethod
     cdef create(SCIP_VAR* scipvar):
@@ -854,9 +854,9 @@ cdef class Variable(Expr):
 
 cdef class Constraint:
     """Base class holding a pointer to corresponding SCIP_CONS"""
-    cdef SCIP_CONS* scip_cons
+    # cdef SCIP_CONS* scip_cons
     # can be used to store problem data
-    cdef public object data
+    # cdef public object data
 
     @staticmethod
     cdef create(SCIP_CONS* scipcons):
@@ -954,14 +954,14 @@ cdef void relayErrorMessage(void *messagehdlr, FILE *file, const char *msg):
 ##
 cdef class Model:
     """Main class holding a pointer to SCIP for managing most interactions"""
-    cdef SCIP* _scip
-    cdef SCIP_Bool* _valid
+    #cdef SCIP* _scip
+    #cdef SCIP_Bool* _valid
     # store best solution to get the solution values easier
-    cdef Solution _bestSol
+    #cdef Solution _bestSol
     # can be used to store problem data
-    cdef public object data
+    # cdef public object data
     # make Model weak referentiable
-    cdef object __weakref__
+    # cdef object __weakref__
 
     def __init__(self, problemName='model', defaultPlugins=True, Model sourceModel=None, origcopy=False, globalcopy=True, enablepricing=False, createscip=True, threadsafe=False):
         """
