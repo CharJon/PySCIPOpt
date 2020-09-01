@@ -785,6 +785,7 @@ cdef extern from "scip/scip.h":
     SCIP_Real SCIPvarGetUbLocal(SCIP_VAR* var)
     SCIP_Real SCIPvarGetObj(SCIP_VAR* var)
     SCIP_Real SCIPvarGetLPSol(SCIP_VAR* var)
+    SCIP_Real SCIPvarGetBranchFactor(SCIP_VAR* var)
     void SCIPvarSetData(SCIP_VAR* var, SCIP_VARDATA* vardata)
     SCIP_VARDATA* SCIPvarGetData(SCIP_VAR* var)
     SCIP_Real SCIPvarGetAvgSol(SCIP_VAR* var)

@@ -852,6 +852,10 @@ cdef class Variable(Expr):
         """Retrieve the current LP solution value of variable"""
         return SCIPvarGetLPSol(self.scip_var)
 
+    def getBranchFactor(self):
+        """Retrieve the current LP solution value of variable"""
+        return SCIPvarGetBranchFactor(self.scip_var)
+
 cdef class Constraint:
     """Base class holding a pointer to corresponding SCIP_CONS"""
     # cdef SCIP_CONS* scip_cons
