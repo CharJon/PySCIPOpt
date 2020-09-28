@@ -1174,6 +1174,12 @@ cdef class Model:
         """Retrieve the depth of the current node"""
         return SCIPgetDepth(self._scip)
 
+    def getMaxDepth(self):
+        return SCIPgetMaxDepth(self._scip)
+
+    def getMaxTotalDepth(self):
+        return SCIPgetMaxTotalDepth(self._scip)
+
     def infinity(self):
         """Retrieve SCIP's infinity value"""
         return SCIPinfinity(self._scip)
