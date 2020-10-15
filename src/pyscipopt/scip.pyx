@@ -4909,7 +4909,7 @@ cdef class Model:
 
                 # Objective cosine similarity - inspired from SCIProwGetObjParallelism()
                 #SCIPlpRecalculateObjSqrNorm(scip.set, scip.lp)
-                prod = rows[i].sqrnorm * 1 #scip.lp.objsqrnorm
+                prod = rows[i].sqrnorm * scip.lp.objsqrnorm
                 row_objcossims[i] = rows[i].objprod / SQRT(prod) if SCIPisPositive(scip, prod) else 0.0
 
                 # L2 norm
