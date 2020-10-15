@@ -638,7 +638,6 @@ cdef extern from "scip/scip.h":
     SCIP_OBJSENSE SCIPgetObjsense(SCIP* scip)
     SCIP_RETCODE SCIPsetObjlimit(SCIP* scip, SCIP_Real objlimit)
     SCIP_Real SCIPgetObjlimit(SCIP* scip)
-    SCIP_Real SCIPgetObjNorm(SCIP* scip)
     SCIP_RETCODE SCIPaddObjoffset(SCIP* scip, SCIP_Real addval)
     SCIP_RETCODE SCIPaddOrigObjoffset(SCIP* scip, SCIP_Real addval)
     SCIP_Real SCIPgetOrigObjoffset(SCIP* scip)
@@ -1444,6 +1443,9 @@ cdef extern from "scip/scip.h":
 
 cdef extern from "scip/tree.h":
     int SCIPnodeGetNAddedConss(SCIP_NODE* node)
+
+cdef extern from "scip/scip_prob.h":
+    SCIP_Real SCIPgetObjNorm(SCIP* scip)
 
 cdef extern from "scip/scipdefplugins.h":
     SCIP_RETCODE SCIPincludeDefaultPlugins(SCIP* scip)

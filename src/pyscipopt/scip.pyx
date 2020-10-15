@@ -4908,8 +4908,9 @@ cdef class Model:
                 row_is_removable[i] = SCIProwIsRemovable(rows[i])
 
                 # Objective cosine similarity - inspired from SCIProwGetObjParallelism()
-                #SCIPlpRecalculateObjSqrNorm(scip.set, scip.lp)
-                prod = rows[i].sqrnorm * scip.lp.objsqrnorm
+                SCIPlpRecalculateObjSqrNorm(scip.set, scip.lp)
+                obj_norm = SCIPgetObjNorm(scip)
+                prod = rows[i].sqrnorm * obj_norm
                 row_objcossims[i] = rows[i].objprod / SQRT(prod) if SCIPisPositive(scip, prod) else 0.0
 
                 # L2 norm
