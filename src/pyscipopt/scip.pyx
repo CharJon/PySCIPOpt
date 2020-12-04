@@ -4775,7 +4775,7 @@ cdef class Model:
             col_incvals = prev_state['col']['incvals']
             col_avgincvals = prev_state['col']['avgincvals']
 
-        cdef SCIP_SOL*sol = SCIPgetBestSol(scip)
+        cdef SCIP_SOL* sol = SCIPgetBestSol(scip)
         cdef SCIP_VAR*var
         cdef SCIP_Real lb, ub, solval
         for i in range(ncols):
