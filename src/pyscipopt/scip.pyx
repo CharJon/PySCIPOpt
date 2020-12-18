@@ -1449,7 +1449,7 @@ cdef class Model:
             PY_SCIP_CALL(SCIPwriteTransProblem(self._scip, fn, ext, False))
         else:
             PY_SCIP_CALL(SCIPwriteOrigProblem(self._scip, fn, ext, False))
-        print('wrote problem to file ' + str(fn))
+        #print('wrote problem to file ' + str(fn))
 
     # Variable Functions
 
@@ -1706,7 +1706,8 @@ cdef class Model:
         else:
             raise Warning("unrecognized variable type")
         if infeasible:
-            print('could not change variable type of variable %s' % var)
+            #print('could not change variable type of variable %s' % var)
+            raise Warning("could not change variable type of variable {var}")
 
     def getVars(self, transformed=False):
         """Retrieve all variables.
@@ -4595,7 +4596,7 @@ cdef class Model:
         """
         fn = str_conversion(filename)
         PY_SCIP_CALL(SCIPwriteParams(self._scip, fn, comments, onlychanged))
-        print('wrote parameter settings to file ' + filename)
+        #print('wrote parameter settings to file ' + filename)
 
     def resetParam(self, name):
         """Reset parameter setting to its default value
@@ -4646,7 +4647,8 @@ cdef class Model:
 
         nsols = SCIPgetNCountedSols(self._scip, &valid)
         if not valid:
-            print('total number of solutions found is not valid!')
+            #print('total number of solutions found is not valid!')
+            raise Warning('total number of solutions found is not valid!')
         return nsols
 
     def setParamsCountsols(self):
@@ -5852,7 +5854,7 @@ cdef class Model:
         cdef SCIP_RESULT result
         branchrule = SCIPfindBranchrule(self._scip, name.encode("UTF-8"))
         if branchrule == NULL:
-            print("Error, branching rule not found!")
+            #print("Error, branching rule not found!")
             return PY_SCIP_RESULT.DIDNOTFIND
         else:
             branchrule.branchexeclp(self._scip, branchrule, allowaddcons, &result)
